@@ -1,0 +1,68 @@
+/* Main layout styles */
+.sidebar {
+    height: 100vh;
+    background-color: #2c3e50;
+    color: white;
+}
+
+.nav-link {
+    color: white;
+    padding: 10px 20px;
+}
+
+.nav-link:hover {
+    background-color: #34495e;
+    color: white;
+}
+
+/* Table styles */
+.table th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Status badge styles */
+.badge {
+    padding: 0.5em 0.8em;
+}
+
+.status-badge.GOOD {
+    background-color: #28a745;
+}
+
+.status-badge.LIGHT_MAINTENANCE_REQUIRED {
+    background-color: #ffc107;
+}
+
+.status-badge.HEAVY_MAINTENANCE_REQUIRED {
+    background-color: #dc3545;
+}
+
+.status-badge.RETIRED {
+    background-color: #6c757d;
+}
+
+/* Form and modal styles */
+.modal-content {
+    border-radius: 0.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+/* Pagination styles */
+.pagination .page-link {
+    color: #2c3e50;
+    border-radius: 0.25rem;
+    margin: 0 2px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #2c3e50;
+    border-color: #2c3e50;
+}

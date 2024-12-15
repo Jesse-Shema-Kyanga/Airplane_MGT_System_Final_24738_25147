@@ -1,0 +1,75 @@
+.hero {
+    height: 600px;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://www.publicdomainpictures.net/pictures/310000/velka/airplane-flying-1567518435t8I.jpg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin-top: 56px;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.search-section {
+    margin-top: -50px;
+}
+
+.card {
+    border: none;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.destinations .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+
+.about-us .achievement h3 {
+    color: #007bff;
+    font-weight: bold;
+    margin: 10px 0;
+}
+
+.service-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-10px);
+}
+
+.service-card i {
+    color: #007bff;
+}
+
+.service-card h4 {
+    margin: 15px 0;
+    font-weight: 600;
+}
+
+.about-us img {
+    transition: transform 0.3s ease;
+}
+
+.about-us img:hover {
+    transform: scale(1.05);
+}
+
