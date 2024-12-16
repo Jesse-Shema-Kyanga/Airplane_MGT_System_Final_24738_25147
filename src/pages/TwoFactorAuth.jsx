@@ -43,7 +43,7 @@ const TwoFactorAuth = () => {
             navigate('/home');
             break;
           case 'MAINTENANCE_STAFF':
-            navigate('/maintenance-dashboard');
+            navigate('/maintenance-page');
             break;
           default:
             navigate('/');

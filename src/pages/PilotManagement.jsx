@@ -15,6 +15,13 @@ const PilotManagement = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const [itemsPerPage] = useState(5);
+    const [searchFilters, setSearchFilters] = useState({
+        name: '',
+        licenseNumber: '',
+        licenseType: '',
+        yearsOfExperience: '',
+        status: ''
+    });
 
     const initialFormData = {
         name: '',
@@ -128,6 +135,18 @@ const PilotManagement = () => {
         setSelectedPilot(null);
     };
 
+    const getFilteredPilots = () => {
+        return pilots.filter(pilot => {
+            return (
+                pilot.name.toLowerCase().includes(searchFilters.name.toLowerCase()) &&
+                pilot.licenseNumber.toLowerCase().includes(searchFilters.licenseNumber.toLowerCase()) &&
+                (searchFilters.licenseType === '' || pilot.licenseType === searchFilters.licenseType) &&
+                pilot.yearsOfExperience.toString().includes(searchFilters.yearsOfExperience) &&
+                (searchFilters.status === '' || pilot.status === searchFilters.status)
+            );
+        });
+    };
+
     const PaginationControls = () => (
         <div className="d-flex justify-content-between align-items-center mt-3">
             <div>
@@ -163,100 +182,155 @@ const PilotManagement = () => {
 
     return (
         <div className="container-fluid">
-        <div className="row">
-            <div className="col-md-2 sidebar p-0">
-                <div className="text-center py-4">
-                    <h4>SkyWay Airlines</h4>
-                    <p>Admin Panel</p>
-                </div>
-                <nav className="nav flex-column">
-                    <NavLink className="nav-link" to="/admin">
-                        <i className="bi bi-speedometer2"></i> Dashboard
-                    </NavLink>
-                    <NavLink to="/" className="nav-link mt-auto">
-                        <i className="bi bi-box-arrow-right"></i> Logout
-                    </NavLink>
-                </nav>
-            </div>
-
-            <div className="col-md-10 content p-4">
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h2>Pilot Management</h2>
-                    <button 
-                        className="btn btn-primary" 
-                        onClick={() => {
-                            resetForm();
-                            setShowModal(true);
-                        }}
-                    >
-                        <i className="bi bi-plus-circle"></i> Add New Pilot
-                    </button>
+            <div className="row">
+                <div className="col-md-2 sidebar p-0">
+                    <div className="text-center py-4">
+                        <h4>SkyWay Airlines</h4>
+                        <p>Admin Panel</p>
+                    </div>
+                    <nav className="nav flex-column">
+                        <NavLink className="nav-link" to="/admin">
+                            <i className="bi bi-speedometer2"></i> Dashboard
+                        </NavLink>
+                        <NavLink to="/" className="nav-link mt-auto">
+                            <i className="bi bi-box-arrow-right"></i> Logout
+                        </NavLink>
+                    </nav>
                 </div>
 
-                <div className="card">
-                    <div className="card-body">
-                        <div className="table-responsive">
-                            {isLoading ? (
-                                <div className="text-center p-3">
-                                    <div className="spinner-border text-primary" role="status">
-                                        <span className="visually-hidden">Loading...</span>
+                <div className="col-md-10 content p-4">
+                    <div className="d-flex justify-content-between align-items-center mb-4">
+                        <h2>Pilot Management</h2>
+                        <button 
+                            className="btn btn-primary" 
+                            onClick={() => {
+                                resetForm();
+                                setShowModal(true);
+                            }}
+                        >
+                            <i className="bi bi-plus-circle"></i> Add New Pilot
+                        </button>
+                    </div>
+
+                    <div className="card">
+                        <div className="card-body">
+                            {/* Column Search Filters */}
+                            <div className="row mb-3">
+                                <div className="col">
+                                    <input
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        placeholder="Search Name"
+                                        value={searchFilters.name}
+                                        onChange={(e) => setSearchFilters({...searchFilters, name: e.target.value})}
+                                    />
+                                </div>
+                                <div className="col">
+                                    <input
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        placeholder="Search License Number"
+                                        value={searchFilters.licenseNumber}
+                                        onChange={(e) => setSearchFilters({...searchFilters, licenseNumber: e.target.value})}
+                                    />
+                                </div>
+                                <div className="col">
+                                    <select
+                                        className="form-control form-control-sm"
+                                        value={searchFilters.licenseType}
+                                        onChange={(e) => setSearchFilters({...searchFilters, licenseType: e.target.value})}
+                                    >
+                                        <option value="">All License Types</option>
+                                        <option value="Commercial">Commercial</option>
+                                        <option value="Private">Private</option>
+                                        <option value="ATP">ATP</option>
+                                    </select>
+                                </div>
+                                <div className="col">
+                                    <input
+                                        type="text"
+                                        className="form-control form-control-sm"
+                                        placeholder="Search Experience"
+                                        value={searchFilters.yearsOfExperience}
+                                        onChange={(e) => setSearchFilters({...searchFilters, yearsOfExperience: e.target.value})}
+                                    />
+                                </div>
+                                <div className="col">
+                                    <select
+                                        className="form-control form-control-sm"
+                                        value={searchFilters.status}
+                                        onChange={(e) => setSearchFilters({...searchFilters, status: e.target.value})}
+                                    >
+                                        <option value="">All Status</option>
+                                        <option value="ACTIVE">Active</option>
+                                        <option value="INACTIVE">Inactive</option>
+                                        <option value="ON_LEAVE">On Leave</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="table-responsive">
+                                {isLoading ? (
+                                    <div className="text-center p-3">
+                                        <div className="spinner-border text-primary" role="status">
+                                            <span className="visually-hidden">Loading...</span>
+                                        </div>
                                     </div>
-                                </div>
-                            ) : pilots.length === 0 ? (
-                                <div className="text-center p-3">
-                                    <p>No pilots found. Add a new pilot to get started.</p>
-                                </div>
-                            ) : (
-                                <>
-                                    <table className="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>License Number</th>
-                                                <th>License Type</th>
-                                                <th>Experience</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {pilots.map((pilot) => (
-                                                <tr key={pilot.pilotId}>
-                                                    <td>{pilot.name}</td>
-                                                    <td>{pilot.licenseNumber}</td>
-                                                    <td>{pilot.licenseType}</td>
-                                                    <td>{pilot.yearsOfExperience} years</td>
-                                                    <td>
-                                                        <span className={`badge status-badge ${pilot.status}`}>
-                                                            {pilot.status}
-                                                        </span>
-                                                    </td>
-                                                    <td>
-                                                        <button 
-                                                            className="btn btn-sm btn-info me-2"
-                                                            onClick={() => handleEdit(pilot)}
-                                                        >
-                                                            <i className="bi bi-pencil"></i>
-                                                        </button>
-                                                        <button 
-                                                            className="btn btn-sm btn-danger"
-                                                            onClick={() => handleDelete(pilot.pilotId)}
-                                                        >
-                                                            <i className="bi bi-trash"></i>
-                                                        </button>
-                                                    </td>
+                                ) : getFilteredPilots().length === 0 ? (
+                                    <div className="text-center p-3">
+                                        <p>No pilots found matching the search criteria.</p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <table className="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>License Number</th>
+                                                    <th>License Type</th>
+                                                    <th>Experience</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                    <PaginationControls />
-                                </>
-                            )}
+                                            </thead>
+                                            <tbody>
+                                                {getFilteredPilots().map((pilot) => (
+                                                    <tr key={pilot.pilotId}>
+                                                        <td>{pilot.name}</td>
+                                                        <td>{pilot.licenseNumber}</td>
+                                                        <td>{pilot.licenseType}</td>
+                                                        <td>{pilot.yearsOfExperience} years</td>
+                                                        <td>
+                                                            <span className={`badge status-badge ${pilot.status}`}>
+                                                                {pilot.status}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <button 
+                                                                className="btn btn-sm btn-info me-2"
+                                                                onClick={() => handleEdit(pilot)}
+                                                            >
+                                                                <i className="bi bi-pencil"></i>
+                                                            </button>
+                                                            <button 
+                                                                className="btn btn-sm btn-danger"
+                                                                onClick={() => handleDelete(pilot.pilotId)}
+                                                            >
+                                                                <i className="bi bi-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        <PaginationControls />
+                                    </>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
             {/* Modal Form */}
             <div className={`modal ${showModal ? 'show' : ''}`} style={{ display: showModal ? 'block' : 'none' }}>
@@ -310,89 +384,89 @@ const PilotManagement = () => {
                                             className="form-select" 
                                             name="licenseType"
                                             value={formData.licenseType}
-                                            onChange={(e) => setFormData({...formData, licenseType: e.target.value})}
-                                            required
-                                        >
-                                            <option value="">Select type</option>
-                                            <option value="Commercial">Commercial</option>
-                                            <option value="Private">Private</option>
-                                            <option value="ATP">ATP</option>
-                                        </select>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <label className="form-label">Years of Experience</label>
-                                        <input 
-                                            type="number" 
-                                            className="form-control" 
-                                            name="yearsOfExperience"
-                                            value={formData.yearsOfExperience}
-                                            onChange={(e) => setFormData({...formData, yearsOfExperience: e.target.value})}
-                                            required 
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <label className="form-label">Phone</label>
-                                        <input 
-                                            type="tel" 
-                                            className="form-control" 
-                                            name="phone"
-                                            value={formData.phone}
-                                            onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                                            required 
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <label className="form-label">Email</label>
-                                        <input 
-                                            type="email" 
-                                            className="form-control" 
-                                            name="email"
-                                            value={formData.email}
-                                            onChange={(e) => setFormData({...formData, email: e.target.value})}
-                                            required 
-                                        />
-                                    </div>
-                                    <div className="col-md-12">
-                                        <label className="form-label">Status</label>
-                                        <select 
-                                            className="form-select" 
-                                            name="status"
-                                            value={formData.status}
-                                            onChange={(e) => setFormData({...formData, status: e.target.value})}
-                                            required
-                                        >
-                                            <option value="">Select status</option>
-                                            <option value="ACTIVE">Active</option>
-                                            <option value="INACTIVE">Inactive</option>
-                                            <option value="ON_LEAVE">On Leave</option>
-                                        </select>
+                                            onChange={(e) => setFormData({...formData, licenseType: e.target.value})}                                            required
+                                            >
+                                                <option value="">Select type</option>
+                                                <option value="Commercial">Commercial</option>
+                                                <option value="Private">Private</option>
+                                                <option value="ATP">ATP</option>
+                                            </select>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <label className="form-label">Years of Experience</label>
+                                            <input 
+                                                type="number" 
+                                                className="form-control" 
+                                                name="yearsOfExperience"
+                                                value={formData.yearsOfExperience}
+                                                onChange={(e) => setFormData({...formData, yearsOfExperience: e.target.value})}
+                                                required 
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <label className="form-label">Phone</label>
+                                            <input 
+                                                type="tel" 
+                                                className="form-control" 
+                                                name="phone"
+                                                value={formData.phone}
+                                                onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                                                required 
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <label className="form-label">Email</label>
+                                            <input 
+                                                type="email" 
+                                                className="form-control" 
+                                                name="email"
+                                                value={formData.email}
+                                                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                                required 
+                                            />
+                                        </div>
+                                        <div className="col-md-12">
+                                            <label className="form-label">Status</label>
+                                            <select 
+                                                className="form-select" 
+                                                name="status"
+                                                value={formData.status}
+                                                onChange={(e) => setFormData({...formData, status: e.target.value})}
+                                                required
+                                            >
+                                                <option value="">Select status</option>
+                                                <option value="ACTIVE">Active</option>
+                                                <option value="INACTIVE">Inactive</option>
+                                                <option value="ON_LEAVE">On Leave</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
-                                    Close
-                                </button>
-                                <button type="submit" className="btn btn-primary">
-                                    {selectedPilot ? 'Update Pilot' : 'Save Pilot'}
-                                </button>
-                            </div>
-                        </form>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-secondary" onClick={() => setShowModal(false)}>
+                                        Close
+                                    </button>
+                                    <button type="submit" className="btn btn-primary">
+                                        {selectedPilot ? 'Update Pilot' : 'Save Pilot'}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
+    
+                {/* Toast Notification */}
+                <ToastContainer position="top-end" className="p-3">
+                    <Toast show={showToast} onClose={() => setShowToast(false)} delay={3000} autohide>
+                        <Toast.Header>
+                            <strong className="me-auto">Notification</strong>
+                        </Toast.Header>
+                        <Toast.Body>{toastMessage}</Toast.Body>
+                    </Toast>
+                </ToastContainer>
             </div>
-
-            {/* Toast Notification */}
-            <ToastContainer position="top-end" className="p-3">
-                <Toast show={showToast} onClose={() => setShowToast(false)} delay={3000} autohide>
-                    <Toast.Header>
-                        <strong className="me-auto">Notification</strong>
-                    </Toast.Header>
-                    <Toast.Body>{toastMessage}</Toast.Body>
-                </Toast>
-            </ToastContainer>
-        </div>
-    );
-};
-
-export default PilotManagement;
+        );
+    };
+    
+    export default PilotManagement;
+    
